@@ -1,13 +1,9 @@
-var config = require('config.json');
+// var config = require('config.json');
 var Q = require('q');
 var lodash = require('lodash');
-var connection = process.env.connectionStringV2 || config.connectionStringV2;
-var database = process.env.databaseV2 || config.databaseV2;
+var mongoDB = require('config/database.js');
 const ObjectID = require('mongodb').ObjectID;
-const mongo = require('mongodb').MongoClient;
-mongo.connect(connection, { useUnifiedTopology: true })
-    .then(conn => global.conn = conn.db(database))
-    .catch(err => console.log(err));
+mongoDB.connect();
 
 
 var service = {};
@@ -22,7 +18,7 @@ module.exports = service;
 
 function create(pessoaParam) {
     var deferred = Q.defer();
-    var people = global.conn.collection("people");
+    var people = global.conn.collection("Usuario");
     // validation
     people.findOne(
         { personName: pessoaParam.personName },
@@ -71,7 +67,7 @@ function getById(_id) {
 
 function listPeople() {
     var deferred = Q.defer();
-    var people = global.conn.collection("people");
+    var people = global.conn.collection("Usuario");
 
     people.find().toArray(function (err, people) {
         if (err) deferred.reject(err.name + ': ' + err.message);
