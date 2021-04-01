@@ -3,13 +3,9 @@ var lodash = require('lodash');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 var Q = require('q');
-var connection = process.env.connectionStringV2 || config.connectionStringV2;
-var database = process.env.databaseV2 || config.databaseV2;
-const ObjectID = require('mongodb').ObjectID;
-const mongo = require('mongodb').MongoClient;
-mongo.connect(connection, { useUnifiedTopology: true })
-    .then(conn => global.conn = conn.db(database))
-    .catch(err => console.log(err));
+var mongoDB = require('config/database.js');
+const ObjectID = mongoDB.ObjectID();
+mongoDB.connect();
 
 var service = {};
 
@@ -18,11 +14,11 @@ service.create = create;
 
 module.exports = service;
 
-function authenticate(username, password) {
+function authenticate(login_user, password) {
     var deferred = Q.defer();
-    var users = global.conn.collection("users");
-
-    users.findOne({ username: username }, function (err, user) {
+    var users = global.conn.collection("Usuarios");
+ 
+    users.findOne({ login: login_user }, function (err, user) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         if (user && bcrypt.compareSync(password, user.hash)) {
@@ -41,16 +37,16 @@ function authenticate(username, password) {
 function create(userParam) {
     var deferred = Q.defer();
 
-    var users = global.conn.collection("users");
+    var users = global.conn.collection("Usuarios");
 
     users.findOne(
-        { username: userParam.username },
+        { login: userParam.login },
         function (err, user) {
             if (err) deferred.reject(err.name + ': ' + err.message);
 
             if (user) {
                 // username already exists
-                deferred.reject('Usuário "' + userParam.username + '" já cadastrado');
+                deferred.reject('Usuário "' + userParam.nome + '" já cadastrado');
             } else {
                 createUser();
             }
@@ -61,7 +57,7 @@ function create(userParam) {
         var user = lodash.omit(userParam, 'password');
 
         // add hashed password to user object
-        user.hash = bcrypt.hashSync(userParam.password, 10);
+        user.hash = bcrypt.hashSync(userParam.senha, 10);
 
         users.insertOne(
             user,

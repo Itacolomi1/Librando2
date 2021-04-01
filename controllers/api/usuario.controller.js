@@ -2,7 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
-var userService = require('services/user.service');
+var userService = require('services/usuario.service');
 
 // routes
 router.post('/authenticate', authenticateUser);
@@ -11,11 +11,11 @@ router.post('/register', registerUser);
 module.exports = router;
 
 function authenticateUser(req, res) {
-    userService.authenticate(req.body.username, req.body.password)
+    userService.authenticate(req.body.email, req.body.senha)
         .then(function (response) {
             if (response) {
                 // authentication successful
-                res.send({ userId: response.userId, token: response.token });
+                res.send({ userId: response.userId, token: response.token });                
             } else {
                 // authentication failed
                 res.status(401).send('Usuário e/ou senha inválidos');

@@ -1,7 +1,7 @@
 var Q = require('q');
 var lodash = require('lodash');
 var mongoDB = require('config/database.js');
-const ObjectID = require('mongodb').ObjectID;
+const ObjectID = mongoDB.ObjectID();
 mongoDB.connect();
 
 
@@ -17,7 +17,7 @@ module.exports = service;
 
 function create(pessoaParam) {
     var deferred = Q.defer();
-    var people = global.conn.collection("Usuario");
+    var people = global.conn.collection("Jogadores");
     // validation
     people.findOne(
         { personName: pessoaParam.personName },
@@ -47,7 +47,7 @@ function create(pessoaParam) {
 
 function getById(_id) {
     var deferred = Q.defer();
-    var people = global.conn.collection("people");
+    var people = global.conn.collection("Jogadores");
     people.findOne({ _id: new ObjectID.createFromHexString(_id) }, function (err, person) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
@@ -66,7 +66,7 @@ function getById(_id) {
 
 function listPeople() {
     var deferred = Q.defer();
-    var people = global.conn.collection("Usuario");
+    var people = global.conn.collection("Jogadores");
 
     people.find().toArray(function (err, people) {
         if (err) deferred.reject(err.name + ': ' + err.message);
@@ -85,7 +85,7 @@ function listPeople() {
 
 function update(personParam) {
     var deferred = Q.defer();
-    var people = global.conn.collection("people");
+    var people = global.conn.collection("Jogadores");
     // validation
     people.findOne({ _id: new ObjectID.createFromHexString( personParam._id) }, function (err, person) {
         if (err) deferred.reject(err.name + ': ' + err.message);
@@ -116,7 +116,7 @@ function update(personParam) {
 
 function _delete(_id) {
     var deferred = Q.defer();
-    var people = global.conn.collection("people");
+    var people = global.conn.collection("Jogadores");
     people.deleteOne(
         { _id: new ObjectID.createFromHexString(_id) },
         function (err) {

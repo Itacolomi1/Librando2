@@ -1,7 +1,9 @@
 
 var config = require('config.json');
+
 var services = {}
 services.connect = connect;
+services.ObjectID = ObjectID;
 
 module.exports = services;
 
@@ -13,4 +15,8 @@ function connect() {
     mongo.connect(connection, { useUnifiedTopology: true })
     .then(conn => global.conn = conn.db(database))
     .catch(err => console.log(err));
+}
+
+function ObjectID(){
+    return require('mongodb').ObjectID;
 }

@@ -9,7 +9,7 @@ var express = require('express');
 var expressJwt = require('express-jwt');
 var config = require("./config.json");
 var cors = require('cors');
-var fs = require('fs')
+
 
 // Criação da API e indicação que trabalha com JSON
 var api = express();
@@ -22,8 +22,9 @@ api.use(express.json());
 // de autenticação, registro de usuários e sobre. Essa camada de segurança é muito boa, porque ajuda
 // na diminuição do tratamento de mensagens indevidas na aplicação
 //api.use('/api', expressJwt({ secret: process.env.secret || config.secret }).unless({ path: ['/api/about','/api/users/authenticate', '/api/users/register'] }));
-api.use('/api/pessoas', require('./controllers/api/pessoas.controller'));
-api.use('/api/about', require('./controllers/api/about.controller'));
+api.use('/api/pessoas', require('./controllers/api/jogador.controller'));
+api.use('/api/usuario',require('./controllers/api/usuario.controller'));
+
 
 //Set Files
 api.use(express.static('view'));
