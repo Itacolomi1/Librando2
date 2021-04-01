@@ -9,6 +9,7 @@ var express = require('express');
 var expressJwt = require('express-jwt');
 var config = require("./config.json");
 var cors = require('cors');
+var fs = require('fs')
 
 // Criação da API e indicação que trabalha com JSON
 var api = express();
@@ -23,7 +24,20 @@ api.use(express.json());
 //api.use('/api', expressJwt({ secret: process.env.secret || config.secret }).unless({ path: ['/api/about','/api/users/authenticate', '/api/users/register'] }));
 api.use('/api/pessoas', require('./controllers/api/pessoas.controller'));
 api.use('/api/about', require('./controllers/api/about.controller'));
-//api.use('/api/users', require('./controllers/api/users.controller'));
+
+//Set Files
+api.use(express.static('view'));
+api.use('/css',express.static(__dirname + 'view/css'));
+api.use('/img',express.static(__dirname + 'view/img'));
+api.use('/js',express.static(__dirname + 'view/js'));
+
+//Set Views
+api.set('views','./view')
+api.set('view engine','ejs')
+
+api.get('/',(req,res)=>{   
+    res.render('index');
+})
 
 // process.env.PORT é uma variável injetada pelo Azure Web App. Caso ela não exista, será utilizada a porta fixa (6000)
 var apiPort = process.env.PORT || config.port;

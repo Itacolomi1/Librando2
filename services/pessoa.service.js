@@ -1,4 +1,3 @@
-// var config = require('config.json');
 var Q = require('q');
 var lodash = require('lodash');
 var mongoDB = require('config/database.js');
